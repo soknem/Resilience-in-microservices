@@ -58,6 +58,7 @@ dependencies {
 
 	// Spring Boot Starter for OAuth2 Resource Server
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
 }
 
 dependencyManagement {

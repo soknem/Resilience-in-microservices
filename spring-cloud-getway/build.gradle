@@ -35,9 +35,10 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
-	// Zipkin and Brave tracing dependencies
-	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+	// Zipkin and Brave tracing dependencies
 
 	// Lombok for code generation
 	compileOnly 'org.projectlombok:lombok'
@@ -53,6 +54,7 @@ dependencies {
 
 
 	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
 
 
 }
