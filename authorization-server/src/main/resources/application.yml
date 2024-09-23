@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: authorization-server
+
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+    stream:
+      kafka:
+        binder:
+          brokers: 68.183.225.48:9092
+
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+

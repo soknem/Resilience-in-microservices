@@ -1,0 +1,8 @@
+rootProject.name = 'microservices'
+include('spring-cloud-getway')
+include('product-service')
+include('eureka-server')
+include('authorization-server')
+include('user-service')
+include('config-server')
+include('spring-cloud-getway-client')

@@ -1,0 +1,66 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: spring-cloud-getway
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+        - id: product-service-route
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/products/**, /api/v1/files/**, /api/v1/public/**
+
+    stream:
+      kafka:
+        binder:
+          brokers: 68.183.225.48:9092
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+    loadbalancer:
+      stats:
+        micrometer:
+          enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  zipkin:
+    tracing:
+      endpoint: http://68.183.225.48:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

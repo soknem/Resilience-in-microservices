@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+      - vault
+      - git
+  cloud:
+    config:
+      enabled: true
+      server:
+        git:
+          uri: https://github.com/soknem/config-resource.git
+          clone-on-start: true
+        vault:
+          backend: secret
+          kv-version: 2
+          host: 68.183.225.48
+          port: 8200
+          authentication: token
+          token: root
+          scheme: http
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+  kafka:
+    bootstrap-servers:
+      - http://68.183.225.48:9092
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+server:
+  port: 8888
+
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG
