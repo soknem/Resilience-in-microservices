@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: spring-cloud-getway
+    name: spring-cloud-gateway
   config:
     import: "optional:configserver:"
   cloud:
@@ -18,10 +18,14 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/api/v1/users/**
+          filters:
+            - TokenRelay
         - id: product-service-route
           uri: lb://product-service
           predicates:
             - Path=/api/v1/products/**, /api/v1/files/**, /api/v1/public/**
+          filters:
+            - TokenRelay
 
     stream:
       kafka:
@@ -38,12 +42,6 @@ spring:
       stats:
         micrometer:
           enabled: true
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://127.0.0.1:8080
 
 management:
   endpoints:
