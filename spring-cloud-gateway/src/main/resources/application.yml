@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   main:
     allow-bean-definition-overriding: true
   application:
@@ -23,9 +25,17 @@ spring:
         - id: product-service-route
           uri: lb://product-service
           predicates:
-            - Path=/api/v1/products/**, /api/v1/files/**, /api/v1/public/**
+            - Path=/api/v1/products/**, /api/v1/files/**
           filters:
             - TokenRelay
+        - id: public-route
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/public/**
+        - id: authorization-server-route
+          uri: lb://authorization-server
+          predicates:
+            - Path=/**
 
     stream:
       kafka:

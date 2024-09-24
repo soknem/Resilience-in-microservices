@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -54,6 +55,8 @@ public class AuthorizationServerConfig {
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
+
+          http.csrf(AbstractHttpConfigurer::disable);
 
         http.exceptionHandling(exceptionHandling -> {
             exceptionHandling.defaultAuthenticationEntryPointFor(
@@ -100,7 +103,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://127.0.0.1:8084/login/oauth2/code/oidc-client")
-                .postLogoutRedirectUri("http://127.0.0.1:8084")
+//                .postLogoutRedirectUri("http://127.0.0.1:8084")
                 .scope("openid")
                 .scope("profile")
                 .scope("email")
@@ -112,8 +115,29 @@ public class AuthorizationServerConfig {
 //                .clientSettings(ClientSettings.builder().requireProofKey(false).build())
                 .build();
 
-        jpaRegisteredClientRepository.save(registeredClient);
+        RegisteredClient noPkceClient1 = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("oidc-client1")
+//                .clientSecret("secret")
+                .clientSecret(passwordEncoder.encode("secret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://127.0.0.1:8085/login/oauth2/code/oidc-client1")
+//                .postLogoutRedirectUri("http://127.0.0.1:8085")
+                .scope("openid")
+                .scope("profile")
+                .scope("email")
+                .scope("address")
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofMinutes(20))
+                        .refreshTokenTimeToLive(Duration.ofDays(15))
+                        .build())
+//                .clientSettings(ClientSettings.builder().requireProofKey(false).build())
+                .build();
+
+//        jpaRegisteredClientRepository.save(registeredClient);
         jpaRegisteredClientRepository.save(noPkceClient);
+        jpaRegisteredClientRepository.save(noPkceClient1);
 
         return jpaRegisteredClientRepository;
     }

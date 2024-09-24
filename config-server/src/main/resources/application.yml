@@ -12,6 +12,8 @@ spring:
         git:
           uri: https://github.com/soknem/config-resource.git
           clone-on-start: true
+          search-paths:
+            - config/*
         vault:
           backend: secret
           kv-version: 2
