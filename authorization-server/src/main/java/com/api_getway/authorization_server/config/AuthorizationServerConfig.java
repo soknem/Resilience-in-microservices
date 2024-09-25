@@ -102,7 +102,7 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://127.0.0.1:8084/login/oauth2/code/oidc-client")
+                .redirectUri("http://localhost:8084/login/oauth2/code/oidc-client")
 //                .postLogoutRedirectUri("http://127.0.0.1:8084")
                 .scope("openid")
                 .scope("profile")
@@ -122,7 +122,7 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://127.0.0.1:8085/login/oauth2/code/oidc-client1")
+                .redirectUri("http://localhost:8085/login/oauth2/code/oidc-client1")
 //                .postLogoutRedirectUri("http://127.0.0.1:8085")
                 .scope("openid")
                 .scope("profile")
@@ -159,7 +159,7 @@ public class AuthorizationServerConfig {
 
         return AuthorizationServerSettings
                 .builder()
-                .issuer("http://127.0.0.1:8080")
+                .issuer("http://localhost:8080")
                 .build();
     }
 

@@ -13,7 +13,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
       routes:
         - id: user-service-route
@@ -35,7 +35,10 @@ spring:
         - id: authorization-server-route
           uri: lb://authorization-server
           predicates:
-            - Path=/**
+            - Path=/identity/**
+          filters:
+            - TokenRelay=
+            - RewritePath=/identity/(?<segment>.*),/$\{segment}
 
     stream:
       kafka:
@@ -59,6 +62,8 @@ management:
       exposure:
         include: "*"
   endpoint:
+    gateway:
+      enabled: true
     health:
       show-details: always
   zipkin:
