@@ -31,8 +31,12 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration()
@@ -68,6 +72,8 @@ public class AuthorizationServerConfig {
         http.oauth2ResourceServer(server -> {
             server.jwt(Customizer.withDefaults());
         });
+
+        http.cors(Customizer.withDefaults());
 
         return http.build();
     }
@@ -120,9 +126,10 @@ public class AuthorizationServerConfig {
 //                .clientSecret("secret")
                 .clientSecret(passwordEncoder.encode("secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8085/login/oauth2/code/oidc-client1")
+                .redirectUri("http://localhost:3000")
 //                .postLogoutRedirectUri("http://127.0.0.1:8085")
                 .scope("openid")
                 .scope("profile")
@@ -150,6 +157,9 @@ public class AuthorizationServerConfig {
                         authorizeRequests.anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults());
+
+        http.cors(Customizer.withDefaults());
+
         return http.build();
     }
 
@@ -174,5 +184,14 @@ public class AuthorizationServerConfig {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 
-
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*")); //allows React to access the API from origin on port 3000. Change accordingly
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.addAllowedHeader("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
