@@ -11,14 +11,13 @@ import java.util.Set;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(target = "roles",ignore = true)
     User fromUserRequest(UserRequest userRequest);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateUserFromRequest(@MappingTarget User user, UserUpdateRequest userRequest);
 
     UserResponse toUserResponse(User user);
-
-
 
 
 }

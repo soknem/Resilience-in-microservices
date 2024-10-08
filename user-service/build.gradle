@@ -61,7 +61,15 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //
 //	// Spring Boot Starter for OAuth2 Resource Server
-//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+	// Spring Cloud OpenFeign for Service Communication
+//	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// Resilience4j for Circuit Breaker
+	implementation 'io.github.resilience4j:resilience4j-spring-boot2'
+	implementation 'io.github.resilience4j:resilience4j-circuitbreaker'
+
 }
 
 

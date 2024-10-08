@@ -22,6 +22,9 @@ spring:
         enabled: true
 
 management:
+  health:
+    circuitbreakers:
+      enabled: true
   endpoints:
     web:
       exposure:

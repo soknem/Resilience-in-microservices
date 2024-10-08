@@ -1,0 +1,75 @@
+server:
+  port: 8085
+spring:
+  profiles:
+    active: dev
+  application:
+    name: client-service
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+    stream:
+      kafka:
+        binder:
+          brokers: 68.183.225.48:9092
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+      enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productService:
+        register-health-indicator: true
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 3
+
+  retry:
+    instances:
+      productService:
+        maxAttempts: 5
+        waitDuration: 1000
+  rateLimiter:
+    instances:
+      productService:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+  bulkhead:
+    instances:
+      productService:
+        maxConcurrentCalls: 10
+        maxWaitDuration: 1000ms
+
+

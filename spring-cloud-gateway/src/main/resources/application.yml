@@ -22,23 +22,66 @@ spring:
             - Path=/api/v1/users/**
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: userServiceCircuitBreaker
+                fallbackUri: forward:/fallback/user
+
         - id: product-service-route
           uri: lb://product-service
           predicates:
             - Path=/api/v1/products/**, /api/v1/files/**
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: productServiceCircuitBreaker
+                fallbackUri: forward:/fallback/product
+
         - id: public-route
           uri: lb://product-service
           predicates:
             - Path=/api/v1/public/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: publicServiceCircuitBreaker
+                fallbackUri: forward:/fallback/public
+
         - id: authorization-server-route
           uri: lb://authorization-server
           predicates:
             - Path=/identity/**
           filters:
-            - TokenRelay=
             - RewritePath=/identity/(?<segment>.*),/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: authorizationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/authorization
+
+        - id: client-service-route
+          uri: lb://client-service
+          predicates:
+            - Path=/api/v1/clients/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: clientServiceCircuitBreaker
+                fallbackUri: forward:/fallback/client
+            - name: Retry
+              args:
+                retries: 3
+                statuses:
+                  - BAD_GATEWAY
+                  - SERVICE_UNAVAILABLE
+                  - GATEWAY_TIMEOUT
+                methods:
+                  - GET
+                  - POST
+                backoff:
+                  firstBackoff: 200ms
+                  maxBackoff: 1s
+                  backoffFactor: 2.0
 
     stream:
       kafka:
@@ -57,6 +100,9 @@ spring:
           enabled: true
 
 management:
+  health:
+    circuitbreakers:
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -77,3 +123,54 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      userServiceCircuitBreaker:
+        register-health-indicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+      productServiceCircuitBreaker:
+        register-health-indicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+      authorizationServiceCircuitBreaker:
+        register-health-indicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+      clientServiceCircuitBreaker:
+        register-health-indicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+      publicServiceCircuitBreaker:
+        register-health-indicator: true
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+

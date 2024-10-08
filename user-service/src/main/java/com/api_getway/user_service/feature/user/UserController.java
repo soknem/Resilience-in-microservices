@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,48 +18,45 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
 
-//    private final UserService userService;
+    private final UserService userService;
 
 
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAuthority('admin:control')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_openid')")
     @PostMapping
-    public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) {
-//        return userService.createUser(userRequest);
+    public void createUser(@Valid @RequestBody UserRequest userRequest) {
 
-        return null;
+        userService.createUser(userRequest);
+
     }
 
 
-//    @PreAuthorize("hasAuthority('admin:control')")
-    @PatchMapping("/{uuid}")
-    public UserResponse updateUser(@PathVariable String uuid, @Valid @RequestBody UserUpdateRequest userRequest) {
+    @PreAuthorize("hasAnyAuthority('SCOPE_openid')")
+    @PatchMapping("/{email}")
+    public UserResponse updateUser(@PathVariable String email, @Valid @RequestBody UserUpdateRequest userRequest) {
 
-//        return userService.updateUser(uuid, userRequest);
+        return userService.updateUserByEmail(email, userRequest);
 
-        return null;
     }
 
 
-//    @PreAuthorize("hasAuthority('admin:control')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_openid')")
     @GetMapping
     public Page<UserResponse> getAllUsers(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "25") int pageSize
     ) {
-//        return userService.getAllUsers(pageNumber, pageSize);
+        return userService.getAllUser(pageNumber, pageSize);
 
-        return null;
     }
 
 
-//    @PreAuthorize("hasAnyAuthority('admin:control')")
-    @GetMapping("/{uuid}")
-    public UserResponse getUserById(@PathVariable String uuid)
+    @PreAuthorize("hasAnyAuthority('SCOPE_openid')")
+    @GetMapping("/{email}")
+    public UserResponse getUserById(@PathVariable String email)
     {
-//        return userService.getUserById(uuid);
+        return userService.getUserByEmail(email);
 
-        return null;
     }
 
 

@@ -1,31 +1,29 @@
 package com.api_getway.user_service.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Table(name = "users")
+@Data
 @Entity
-public class User{
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String uuid;
+    private String email;
 
-    @Column(nullable = false, length = 50, unique = true)
-    private String username;
+    private String password;
 
-    @Column(nullable = false, length = 10)
-    private String gender;
+    private String name;
 
+    private Boolean isEnabled;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    Set<Role> roles;
 }

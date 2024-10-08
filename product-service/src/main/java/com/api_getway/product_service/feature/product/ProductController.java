@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_api.read')")
+//    @PreAuthorize("hasAnyAuthority('SCOPE_openid')")
     public ProductResponse getProductById(@PathVariable String id) {
 
         return productService.getProductById(id);

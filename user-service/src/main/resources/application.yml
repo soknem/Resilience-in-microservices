@@ -27,6 +27,9 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080
 management:
+  health:
+    circuitbreakers:
+      enabled: true
   endpoints:
     web:
       exposure:
