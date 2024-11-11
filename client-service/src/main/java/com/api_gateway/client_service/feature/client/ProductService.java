@@ -15,9 +15,10 @@ public class ProductService {
 
     private final ProductServiceFeignClient productServiceFeignClient;
 
-    @CircuitBreaker(name = "productService",fallbackMethod = "getProductByIdFallBack")
-    @Retry(name = "productService",fallbackMethod = "getProductByIdFallBack")
+//    @CircuitBreaker(name = "productService",fallbackMethod = "getProductByIdFallBack")
+//    @Retry(name = "productService",fallbackMethod = "getProductByIdFallBack")
     public ProductResponse getProductById(String id) {
+
         return productServiceFeignClient.getProductById(id);
     }
 
